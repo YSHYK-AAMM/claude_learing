@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>おみくじアプリ</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #fdf5e6;
+    }
+    .container {
+      text-align: center;
+    }
+    h1 {
+      font-size: 2rem;
+      color: #8b0000;
+    }
+    #result {
+      font-size: 3rem;
+      margin: 30px 0;
+      min-height: 80px;
+      color: #333;
+    }
+    button {
+      font-size: 2rem;
+      padding: 20px 60px;
+      background: #e60012;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #ff1a1a;
+    }
+    @keyframes sparkle {
+      0% { opacity: 0; transform: translateY(0) scale(0); }
+      50% { opacity: 1; transform: translateY(-30px) scale(1); }
+      100% { opacity: 0; transform: translateY(-80px) scale(0.5); }
+    }
+    .sparkle {
+      position: fixed;
+      pointer-events: none;
+      animation: sparkle 1.5s ease-in-out forwards;
+      color: gold;
+      z-index: 9999;
+    }
+    .super-lucky {
+      color: gold;
+      font-size: 4rem;
+      text-shadow: 0 0 10px #ffd700, 0 0 20px #ffaa00, 0 0 40px #ff8800;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>おみくじ</h1>
+    <div id="result">ボタンを押してね</div>
+    <button onclick="draw()">引く！</button>
+  </div>
+  <script>
+    function draw() {
+      const fortunes = ['超大吉', '大吉', '中吉', '小吉', '吉', '末吉', '凶', '大凶'];
+      const result = fortunes[Math.floor(Math.random() * fortunes.length)];
+      const resultEl = document.getElementById('result');
+      resultEl.textContent = result;
+
+      // 前回の粒子とスタイルをクリア
+      document.querySelectorAll('.sparkle').forEach(el => el.remove());
+      resultEl.classList.remove('super-lucky');
+
+      if (result === '超大吉') {
+        resultEl.classList.add('super-lucky');
+        const symbols = ['★', '✦'];
+        for (let i = 0; i < 40; i++) {
+          const spark = document.createElement('div');
+          spark.classList.add('sparkle');
+          spark.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+          spark.style.left = Math.random() * 100 + 'vw';
+          spark.style.top = Math.random() * 100 + 'vh';
+          spark.style.fontSize = (Math.random() * 20 + 10) + 'px';
+          spark.style.animationDelay = (Math.random() * 2) + 's';
+          document.body.appendChild(spark);
+          spark.addEventListener('animationend', () => spark.remove());
+        }
+      }
+    }
+  </script>
+</body>
+</html>
