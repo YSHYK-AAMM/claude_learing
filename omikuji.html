@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>おみくじアプリ</title>
   <style>
+    * { box-sizing: border-box; }
+
     body {
       font-family: sans-serif;
       display: flex;
@@ -13,20 +15,29 @@
       min-height: 100vh;
       margin: 0;
       background: #fdf5e6;
+      overflow: hidden;
+      position: relative;
     }
+
     .container {
       text-align: center;
+      z-index: 10;
+      position: relative;
     }
+
     h1 {
       font-size: 2rem;
       color: #8b0000;
     }
+
     #result {
       font-size: 3rem;
       margin: 30px 0;
       min-height: 80px;
       color: #333;
+      transition: all 0.3s ease;
     }
+
     button {
       font-size: 2rem;
       padding: 20px 60px;
@@ -35,15 +46,21 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      position: relative;
+      z-index: 20;
     }
+
     button:hover {
       background: #ff1a1a;
     }
+
+    /* ===== 超大吉 ===== */
     @keyframes sparkle {
       0% { opacity: 0; transform: translateY(0) scale(0); }
       50% { opacity: 1; transform: translateY(-30px) scale(1); }
       100% { opacity: 0; transform: translateY(-80px) scale(0.5); }
     }
+
     .sparkle {
       position: fixed;
       pointer-events: none;
@@ -51,10 +68,187 @@
       color: gold;
       z-index: 9999;
     }
+
     .super-lucky {
       color: gold;
       font-size: 4rem;
       text-shadow: 0 0 10px #ffd700, 0 0 20px #ffaa00, 0 0 40px #ff8800;
+    }
+
+    /* ===== 伝説の神吉 ===== */
+
+    /* 虹色テキストアニメーション */
+    @keyframes rainbowText {
+      0%   { color: #ff0000; text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000, 0 0 80px #ff0000; }
+      14%  { color: #ff7700; text-shadow: 0 0 20px #ff7700, 0 0 40px #ff7700, 0 0 80px #ff7700; }
+      28%  { color: #ffff00; text-shadow: 0 0 20px #ffff00, 0 0 40px #ffff00, 0 0 80px #ffff00; }
+      42%  { color: #00ff00; text-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00, 0 0 80px #00ff00; }
+      57%  { color: #0088ff; text-shadow: 0 0 20px #0088ff, 0 0 40px #0088ff, 0 0 80px #0088ff; }
+      71%  { color: #8800ff; text-shadow: 0 0 20px #8800ff, 0 0 40px #8800ff, 0 0 80px #8800ff; }
+      85%  { color: #ff00ff; text-shadow: 0 0 20px #ff00ff, 0 0 40px #ff00ff, 0 0 80px #ff00ff; }
+      100% { color: #ff0000; text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000, 0 0 80px #ff0000; }
+    }
+
+    /* 背景が虹色にパルスする */
+    @keyframes rainbowBg {
+      0%   { background: radial-gradient(ellipse at center, #ffe4f0 0%, #ffd6e0 40%, #ffecd2 100%); }
+      16%  { background: radial-gradient(ellipse at center, #fff9c4 0%, #ffecd2 40%, #e8f5e9 100%); }
+      33%  { background: radial-gradient(ellipse at center, #e8f5e9 0%, #c8e6c9 40%, #e3f2fd 100%); }
+      50%  { background: radial-gradient(ellipse at center, #e3f2fd 0%, #bbdefb 40%, #ede7f6 100%); }
+      66%  { background: radial-gradient(ellipse at center, #ede7f6 0%, #d1c4e9 40%, #fce4ec 100%); }
+      83%  { background: radial-gradient(ellipse at center, #fce4ec 0%, #f8bbd9 40%, #ffe4f0 100%); }
+      100% { background: radial-gradient(ellipse at center, #ffe4f0 0%, #ffd6e0 40%, #ffecd2 100%); }
+    }
+
+    /* 金オーラ */
+    @keyframes auraGlow {
+      0%   { box-shadow: 0 0 40px 20px rgba(255, 215, 0, 0.4), 0 0 80px 40px rgba(255, 140, 0, 0.2); }
+      50%  { box-shadow: 0 0 80px 40px rgba(255, 215, 0, 0.8), 0 0 160px 80px rgba(255, 140, 0, 0.4), 0 0 240px 120px rgba(255, 0, 128, 0.2); }
+      100% { box-shadow: 0 0 40px 20px rgba(255, 215, 0, 0.4), 0 0 80px 40px rgba(255, 140, 0, 0.2); }
+    }
+
+    /* テキストスケールバウンス */
+    @keyframes legendBounce {
+      0%   { transform: scale(0) rotate(-10deg); opacity: 0; }
+      60%  { transform: scale(1.3) rotate(3deg); opacity: 1; }
+      80%  { transform: scale(0.95) rotate(-1deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    /* フラッシュ */
+    @keyframes flashIn {
+      0%   { opacity: 1; }
+      50%  { opacity: 0.3; }
+      100% { opacity: 0; }
+    }
+
+    /* 紙吹雪の落下 */
+    @keyframes confettiFall {
+      0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0.6; }
+    }
+
+    /* パーティクル爆発 */
+    @keyframes particleBurst {
+      0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+    }
+
+    /* 輝く星のキラキラ */
+    @keyframes twinkle {
+      0%   { opacity: 0; transform: scale(0) rotate(0deg); }
+      30%  { opacity: 1; transform: scale(1.5) rotate(90deg); }
+      60%  { opacity: 0.7; transform: scale(1) rotate(180deg); }
+      100% { opacity: 0; transform: scale(0) rotate(360deg); }
+    }
+
+    /* 虹の帯 */
+    @keyframes rainbowBar {
+      0%   { opacity: 0; transform: scaleX(0); }
+      30%  { opacity: 0.7; transform: scaleX(1); }
+      70%  { opacity: 0.7; transform: scaleX(1); }
+      100% { opacity: 0; transform: scaleX(1); }
+    }
+
+    /* スペシャルメッセージ */
+    @keyframes messageAppear {
+      0%   { opacity: 0; transform: translateY(30px) scale(0.8); }
+      50%  { opacity: 1; transform: translateY(-5px) scale(1.05); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .legend-result {
+      font-size: 5rem;
+      font-weight: 900;
+      animation: rainbowText 1.5s infinite linear, legendBounce 0.8s ease-out forwards;
+      display: inline-block;
+    }
+
+    .legend-bg-active {
+      animation: rainbowBg 3s infinite ease-in-out, auraGlow 2s infinite ease-in-out;
+    }
+
+    .flash-overlay {
+      position: fixed;
+      inset: 0;
+      background: white;
+      z-index: 99999;
+      pointer-events: none;
+      animation: flashIn 0.6s ease-out forwards;
+    }
+
+    .confetti {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      width: 10px;
+      height: 14px;
+      animation: confettiFall linear forwards;
+    }
+
+    .particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9997;
+      border-radius: 50%;
+      animation: particleBurst ease-out forwards;
+    }
+
+    .twinkle-star {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      animation: twinkle ease-in-out forwards;
+    }
+
+    .rainbow-bar {
+      position: fixed;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      pointer-events: none;
+      z-index: 9995;
+      background: linear-gradient(90deg, #ff0000, #ff7700, #ffff00, #00ff00, #0088ff, #8800ff, #ff00ff);
+      transform-origin: left center;
+      animation: rainbowBar 3s ease-in-out forwards;
+    }
+
+    .legend-message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 99990;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .legend-message .badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #ffd700 0%, #ff8c00 30%, #ff1493 60%, #8b00ff 100%);
+      color: white;
+      font-size: 1rem;
+      font-weight: 900;
+      padding: 8px 24px;
+      border-radius: 999px;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 24px rgba(255, 215, 0, 0.6);
+      animation: messageAppear 0.6s ease-out forwards;
+      animation-delay: 0.5s;
+      opacity: 0;
+    }
+
+    .legend-message .sub {
+      display: block;
+      color: #ffd700;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      animation: messageAppear 0.6s ease-out forwards;
+      animation-delay: 0.8s;
+      opacity: 0;
     }
   </style>
 </head>
@@ -64,32 +258,198 @@
     <div id="result">ボタンを押してね</div>
     <button onclick="draw()">引く！</button>
   </div>
+
   <script>
     function draw() {
-      const fortunes = ['超大吉', '大吉', '中吉', '小吉', '吉', '末吉', '凶', '大凶'];
-      const result = fortunes[Math.floor(Math.random() * fortunes.length)];
+      // 前回のエフェクトをすべてクリア
+      clearEffects();
+
       const resultEl = document.getElementById('result');
+
+      // ===== 確率設定 =====
+      // 伝説の神吉: 1/200 (0.5%)
+      // 超大吉: 1/20 (5%)
+      // その他: 均等
+      const roll = Math.random();
+
+      let result;
+      if (roll < 0.005) {
+        result = '伝説の神吉';
+      } else if (roll < 0.055) {
+        result = '超大吉';
+      } else {
+        const common = ['大吉', '中吉', '小吉', '吉', '末吉', '凶', '大凶'];
+        result = common[Math.floor(Math.random() * common.length)];
+      }
+
       resultEl.textContent = result;
 
-      // 前回の粒子とスタイルをクリア
-      document.querySelectorAll('.sparkle').forEach(el => el.remove());
-      resultEl.classList.remove('super-lucky');
-
-      if (result === '超大吉') {
-        resultEl.classList.add('super-lucky');
-        const symbols = ['★', '✦'];
-        for (let i = 0; i < 40; i++) {
-          const spark = document.createElement('div');
-          spark.classList.add('sparkle');
-          spark.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-          spark.style.left = Math.random() * 100 + 'vw';
-          spark.style.top = Math.random() * 100 + 'vh';
-          spark.style.fontSize = (Math.random() * 20 + 10) + 'px';
-          spark.style.animationDelay = (Math.random() * 2) + 's';
-          document.body.appendChild(spark);
-          spark.addEventListener('animationend', () => spark.remove());
-        }
+      if (result === '伝説の神吉') {
+        showLegend(resultEl);
+      } else if (result === '超大吉') {
+        showSuperLucky(resultEl);
       }
+    }
+
+    function clearEffects() {
+      // クラス除去
+      const resultEl = document.getElementById('result');
+      resultEl.className = '';
+      document.body.classList.remove('legend-bg-active');
+
+      // 動的生成した要素をすべて削除
+      const selectors = [
+        '.sparkle', '.confetti', '.particle', '.twinkle-star',
+        '.rainbow-bar', '.flash-overlay', '.legend-message'
+      ];
+      selectors.forEach(sel => {
+        document.querySelectorAll(sel).forEach(el => el.remove());
+      });
+    }
+
+    // ============================================================
+    //  超大吉 の演出
+    // ============================================================
+    function showSuperLucky(resultEl) {
+      resultEl.classList.add('super-lucky');
+      const symbols = ['★', '✦'];
+      for (let i = 0; i < 40; i++) {
+        const spark = document.createElement('div');
+        spark.classList.add('sparkle');
+        spark.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        spark.style.left = Math.random() * 100 + 'vw';
+        spark.style.top = Math.random() * 100 + 'vh';
+        spark.style.fontSize = (Math.random() * 20 + 10) + 'px';
+        spark.style.animationDelay = (Math.random() * 2) + 's';
+        document.body.appendChild(spark);
+        spark.addEventListener('animationend', () => spark.remove());
+      }
+    }
+
+    // ============================================================
+    //  伝説の神吉 の演出
+    // ============================================================
+    function showLegend(resultEl) {
+
+      // 1. 画面フラッシュ
+      const flash = document.createElement('div');
+      flash.classList.add('flash-overlay');
+      document.body.appendChild(flash);
+      flash.addEventListener('animationend', () => flash.remove());
+
+      // 2. テキストに虹アニメーション適用
+      resultEl.innerHTML = '<span class="legend-result">伝説の神吉</span>';
+
+      // 3. 背景を虹パルスに
+      document.body.classList.add('legend-bg-active');
+
+      // 4. 虹の横線 (複数本)
+      const barPositions = [15, 30, 45, 55, 70, 85];
+      barPositions.forEach((pct, i) => {
+        const bar = document.createElement('div');
+        bar.classList.add('rainbow-bar');
+        bar.style.top = pct + 'vh';
+        bar.style.animationDelay = (i * 0.15) + 's';
+        document.body.appendChild(bar);
+        bar.addEventListener('animationend', () => bar.remove());
+      });
+
+      // 5. スペシャルバッジメッセージ
+      const msg = document.createElement('div');
+      msg.classList.add('legend-message');
+      msg.innerHTML = `
+        <div class="badge">LEGENDARY DIVINE FORTUNE</div>
+        <span class="sub">これは奇跡のお告げぴ！！</span>
+      `;
+      document.body.appendChild(msg);
+      // 5秒後に消す
+      setTimeout(() => {
+        msg.style.transition = 'opacity 1s ease';
+        msg.style.opacity = '0';
+        setTimeout(() => msg.remove(), 1000);
+      }, 5000);
+
+      // 6. 紙吹雪 (100枚)
+      const confettiColors = [
+        '#ff0000', '#ff7700', '#ffff00', '#00cc00',
+        '#0088ff', '#8800ff', '#ff00ff', '#ffd700',
+        '#ff1493', '#00ffff'
+      ];
+      for (let i = 0; i < 120; i++) {
+        setTimeout(() => {
+          const c = document.createElement('div');
+          c.classList.add('confetti');
+          const color = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+          c.style.background = color;
+          c.style.left = Math.random() * 100 + 'vw';
+          c.style.top = '-20px';
+          c.style.width = (Math.random() * 10 + 6) + 'px';
+          c.style.height = (Math.random() * 12 + 6) + 'px';
+          c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+          c.style.opacity = (Math.random() * 0.5 + 0.7).toString();
+          const duration = (Math.random() * 3 + 3) + 's';
+          c.style.animationDuration = duration;
+          c.style.animationDelay = '0s';
+          document.body.appendChild(c);
+          c.addEventListener('animationend', () => c.remove());
+        }, i * 30);
+      }
+
+      // 7. パーティクル爆発 (画面中央から放射)
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      const particleColors = ['#ffd700', '#ff1493', '#00ffff', '#ff7700', '#8800ff', '#00ff88'];
+      for (let i = 0; i < 60; i++) {
+        const angle = (i / 60) * Math.PI * 2;
+        const distance = (Math.random() * 300 + 150);
+        const dx = Math.cos(angle) * distance;
+        const dy = Math.sin(angle) * distance;
+        const p = document.createElement('div');
+        p.classList.add('particle');
+        const size = (Math.random() * 12 + 6) + 'px';
+        p.style.width = size;
+        p.style.height = size;
+        p.style.left = cx + 'px';
+        p.style.top = cy + 'px';
+        p.style.background = particleColors[Math.floor(Math.random() * particleColors.length)];
+        p.style.setProperty('--dx', dx + 'px');
+        p.style.setProperty('--dy', dy + 'px');
+        const dur = (Math.random() * 0.8 + 0.8) + 's';
+        p.style.animationDuration = dur;
+        p.style.animationDelay = (Math.random() * 0.3) + 's';
+        document.body.appendChild(p);
+        p.addEventListener('animationend', () => p.remove());
+      }
+
+      // 8. キラキラ星を画面中に広げる (継続的に)
+      const twinkelSymbols = ['✦', '★', '✨', '♦', '◈', '❋'];
+      let twinkleCount = 0;
+      const twinkleInterval = setInterval(() => {
+        for (let k = 0; k < 4; k++) {
+          const t = document.createElement('div');
+          t.classList.add('twinkle-star');
+          t.textContent = twinkelSymbols[Math.floor(Math.random() * twinkelSymbols.length)];
+          t.style.left = Math.random() * 100 + 'vw';
+          t.style.top = Math.random() * 100 + 'vh';
+          const size = (Math.random() * 24 + 12) + 'px';
+          t.style.fontSize = size;
+          const hue = Math.floor(Math.random() * 360);
+          t.style.color = `hsl(${hue}, 100%, 60%)`;
+          t.style.textShadow = `0 0 10px hsl(${hue}, 100%, 70%), 0 0 20px hsl(${hue}, 100%, 50%)`;
+          const dur = (Math.random() * 1.5 + 1) + 's';
+          t.style.animationDuration = dur;
+          document.body.appendChild(t);
+          t.addEventListener('animationend', () => t.remove());
+        }
+        twinkleCount++;
+        if (twinkleCount > 40) clearInterval(twinkleInterval);
+      }, 150);
+
+      // 9. 10秒後に背景を元に戻す
+      setTimeout(() => {
+        document.body.classList.remove('legend-bg-active');
+        clearInterval(twinkleInterval);
+      }, 10000);
     }
   </script>
 </body>
